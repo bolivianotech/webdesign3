@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSS Borders & Box Model</title>
+
+  <!-- Reveal.js CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.5.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.5.0/dist/theme/white.css" id="theme" />
+
+  <!-- Fuente Inter (Google Fonts) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #F5F7FA;
+      --text-color: #2c3e50;
+      --accent-blue: #3498db;
+      --accent-green: #2ecc71;
+      --gray-mid: #95a5a6;
+    }
+
+    body {
+      background-color: var(--bg-color);
+    }
+
+    .reveal {
+      font-family: 'Inter', sans-serif;
+      font-size: 38px;
+      color: var(--text-color);
+    }
+
+    .reveal h1,
+    .reveal h2 {
+      font-weight: 700;
+      margin-bottom: 1.2em;
+    }
+
+    .reveal p,
+    .reveal li {
+      font-size: 0.85em;
+      line-height: 1.5;
+    }
+
+    /* Estilo de código */
+    .reveal code {
+      background: rgba(52, 152, 219, 0.08);
+      color: var(--accent-blue);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .code-block {
+      background: white;
+      padding: 16px;
+      border: 1px solid var(--accent-blue);
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.9em;
+      color: #2c3e50;
+      text-align: left;
+      margin: 1.5em auto;
+      max-width: 600px;
+    }
+
+    /* Flechas de navegación: pequeñas, esquineras, sin solapar */
+    .reveal .controls {
+      bottom: 16px;
+      right: 16px;
+      left: auto;
+      top: auto;
+      width: auto;
+      height: auto;
+    }
+
+    .reveal .controls .navigate-left,
+    .reveal .controls .navigate-right,
+    .reveal .controls .navigate-up,
+    .reveal .controls .navigate-down {
+      width: 32px;
+      height: 32px;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .reveal .controls .navigate-left:hover,
+    .reveal .controls .navigate-right:hover {
+      opacity: 0.8;
+    }
+
+    /* Diagramas simples – estilo flat */
+    .box-model-diagram,
+    .border-radius-demo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2em 0;
+    }
+
+    .ui-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2em;
+      max-width: 800px;
+      margin: 2em auto;
+    }
+
+    .ui-item {
+      background: white;
+      border: 2px solid var(--accent-blue);
+      padding: 12px;
+      text-align: center;
+      font-size: 0.8em;
+      border-radius: 4px;
+    }
+
+    .ui-item.avatar { border-radius: 50%; height: 80px; width: 80px; margin: 0 auto; }
+    .ui-item.btn { padding: 8px 16px; }
+
+    /* Label para flechas en diagramas */
+    .arrow-label {
+      font-size: 0.75em;
+      color: var(--text-color);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Slide 1: Título -->
+      <section>
+        <h1>CSS BORDERS</h1>
+        <p style="font-size:1.2em;color:var(--accent-blue);margin-top:1em;">Domina el borde y el modelo de caja</p>
+        <!-- Ilustración simplificada (SVG inline o imagen externa) -->
+        <div style="margin-top:2em;width:200px;height:200px;position:relative;">
+          <div style="position:absolute;width:200px;height:200px;border:12px solid var(--accent-blue);"></div>
+          <div style="position:absolute;width:160px;height:160px;background:#eef2f7;left:20px;top:20px;"></div>
+          <div style="position:absolute;width:120px;height:120px;background:white;left:40px;top:40px;display:flex;align-items:center;justify-content:center;font-size:0.8em;">Content</div>
+        </div>
+      </section>
+
+      <!-- Slide 2: Box Model -->
+      <section>
+        <h2>Entendiendo el Box Model</h2>
+        <div class="box-model-diagram">
+          <div style="position:relative;width:240px;height:240px;margin:0 auto;">
+            <!-- Margin (punteado) -->
+            <div style="position:absolute;width:240px;height:240px;border:1px dashed var(--gray-mid);"></div>
+            <!-- Border -->
+            <div style="position:absolute;width:200px;height:200px;border:8px solid var(--accent-blue);left:20px;top:20px;"></div>
+            <!-- Padding -->
+            <div style="position:absolute;width:160px;height:160px;background:#eef2f7;left:40px;top:40px;"></div>
+            <!-- Content -->
+            <div style="position:absolute;width:120px;height:120px;background:white;left:60px;top:60px;display:flex;align-items:center;justify-content:center;font-size:0.8em;">Content</div>
+
+            <!-- Flechas y etiquetas -->
+            <div style="position:absolute;left:-50px;top:110px;color:var(--text-color);font-size:0.8em;">Margin</div>
+            <div style="position:absolute;left:10px;top:110px;color:var(--text-color);font-size:0.8em;">Border</div>
+            <div style="position:absolute;left:45px;top:110px;color:var(--text-color);font-size:0.8em;">Padding</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 3: Sintaxis -->
+      <section>
+        <h2>Sintaxis de <code>border</code></h2>
+        <div class="code-block">
+          border: 3px solid blue;
+        </div>
+        <p style="margin-top:1em;font-size:0.9em;">
+          <span style="color:var(--accent-blue);">3px</span> → <strong>Width</strong> &nbsp;|&nbsp;
+          <span style="color:#e74c3c;">solid</span> → <strong>Style</strong> &nbsp;|&nbsp;
+          <span style="color:#2ecc71;">blue</span> → <strong>Color</strong>
+        </p>
+      </section>
+
+      <!-- Slide 4: Border Radius -->
+      <section>
+        <h2>Suaviza con <code>border-radius</code></h2>
+        <div class="border-radius-demo" style="gap:1.5em;">
+          <div style="text-align:center;">
+            <div style="width:80px;height:80px;border:2px solid var(--accent-blue);border-radius:0px;margin:0 auto;"></div>
+            <div class="arrow-label">0px</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:80px;height:80px;border:2px solid var(--accent-blue);border-radius:10px;margin:0 auto;"></div>
+            <div class="arrow-label">10px</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:80px;height:80px;border:2px solid var(--accent-blue);border-radius:50px;margin:0 auto;"></div>
+            <div class="arrow-label">50px</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:80px;height:80px;border:2px solid var(--accent-blue);border-radius:50%;margin:0 auto;"></div>
+            <div class="arrow-label">50%</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 5: Aplicaciones UI -->
+      <section>
+        <h2>Bordes en Interfaces Reales</h2>
+        <div class="ui-grid">
+          <div class="ui-item avatar" style="border:2px dashed var(--accent-blue);"></div>
+          <div class="ui-item avatar" style="border:3px solid var(--accent-blue);border-radius:50%;"></div>
+          <div class="ui-item avatar" style="border:2px solid var(--accent-green);border-radius:50%;"></div>
+
+          <div class="ui-item btn" style="border:1px solid var(--accent-blue);">Botón clásico</div>
+          <div class="ui-item btn" style="border-bottom:3px solid var(--accent-green);border-radius:0;border-left:none;border-right:none;border-top:none;">Underline</div>
+          <div class="ui-item btn" style="border:2px solid var(--accent-blue);border-radius:20px;">Rounded</div>
+        </div>
+        <p style="font-size:0.8em;text-align:center;margin-top:1em;color:var(--accent-green);">
+          Los bordes definen identidad, interacción y jerarquía visual.
+        </p>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Reveal.js JS -->
+  <script src="https://unpkg.com/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      controls: true,
+      controlsLayout: 'edges', // ← ¡Importante! Flechas en esquinas
+      controlsBackArrows: 'faded',
+      progress: false,
+      slideNumber: false,
+      hash: true,
+      transition: 'slide',
+      backgroundTransition: 'none'
+    });
+  </script>
+</body>
+</html>
+
