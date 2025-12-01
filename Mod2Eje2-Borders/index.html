@@ -25,6 +25,17 @@
       background-color: var(--bg-color);
     }
 
+    .arrow-line {
+        position: absolute;
+        border-top: 1px solid #95a5a6;
+        width: 20px;
+        transform: rotate(45deg);
+        top: 50%;
+        left: 50%;
+        margin-top: -1px;
+        margin-left: -10px;
+    }
+
     .reveal {
       font-family: 'Inter', sans-serif;
       font-size: 38px;
@@ -144,27 +155,50 @@
         </div>
       </section>
 
-      <!-- Slide 2: Box Model -->
-      <section>
-        <h2>Entendiendo el Box Model</h2>
-        <div class="box-model-diagram">
-          <div style="position:relative;width:240px;height:240px;margin:0 auto;">
-            <!-- Margin (punteado) -->
-            <div style="position:absolute;width:240px;height:240px;border:1px dashed var(--gray-mid);"></div>
-            <!-- Border -->
-            <div style="position:absolute;width:200px;height:200px;border:8px solid var(--accent-blue);left:20px;top:20px;"></div>
-            <!-- Padding -->
-            <div style="position:absolute;width:160px;height:160px;background:#eef2f7;left:40px;top:40px;"></div>
-            <!-- Content -->
-            <div style="position:absolute;width:120px;height:120px;background:white;left:60px;top:60px;display:flex;align-items:center;justify-content:center;font-size:0.8em;">Content</div>
+     <!-- Slide 2: Box Model - CORREGIDA -->
+    <section>
+    <h2>Entendiendo el Box Model</h2>
 
-            <!-- Flechas y etiquetas -->
-            <div style="position:absolute;left:-50px;top:110px;color:var(--text-color);font-size:0.8em;">Margin</div>
-            <div style="position:absolute;left:10px;top:110px;color:var(--text-color);font-size:0.8em;">Border</div>
-            <div style="position:absolute;left:45px;top:110px;color:var(--text-color);font-size:0.8em;">Padding</div>
-          </div>
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 2em;">
+        <!-- Diagrama central -->
+        <div style="position: relative; width: 240px; height: 240px; display: flex; align-items: center; justify-content: center;">
+        <!-- Margin (dotted) -->
+        <div style="position: absolute; width: 240px; height: 240px; border: 1px dashed #95a5a6; box-sizing: border-box;"></div>
+        <!-- Border -->
+        <div style="position: absolute; width: 200px; height: 200px; border: 8px solid #3498db; box-sizing: border-box;"></div>
+        <!-- Padding -->
+        <div style="position: absolute; width: 160px; height: 160px; background: #eef2f7; box-sizing: border-box;"></div>
+        <!-- Content -->
+        <div style="position: absolute; width: 120px; height: 120px; background: white; display: flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold; color: #2c3e50; box-sizing: border-box;">
+            Content
         </div>
-      </section>
+        </div>
+
+        <!-- Etiquetas horizontales con flechas simuladas -->
+        <div style="margin-left: 20px; display: flex; flex-direction: column; gap: 1.5em; font-size: 0.85em; color: #2c3e50;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="width: 12px; height: 12px; background: #95a5a6; border-radius: 50%;"></span>
+            <span>Margin</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="width: 12px; height: 12px; background: #3498db; border-radius: 50%;"></span>
+            <span>Border</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="width: 12px; height: 12px; background: #eef2f7; border-radius: 50%;"></span>
+            <span>Padding</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="width: 12px; height: 12px; background: white; border: 1px solid #2c3e50; border-radius: 50%;"></span>
+            <span>Content</span>
+        </div>
+        </div>
+    </div>
+
+    <p style="font-size: 0.8em; text-align: center; margin-top: 2em; color: #7f8c8d;">
+        Cada capa afecta el tamaño total del elemento. ¡El padding y margin no son visibles por defecto!
+    </p>
+    </section>
 
       <!-- Slide 3: Sintaxis -->
       <section>
