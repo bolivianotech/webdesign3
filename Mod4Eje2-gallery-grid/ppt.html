@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería Responsive con CSS Grid: Auto-fit y Minmax()</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .slide-container {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            perspective: 1000px;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1.000), opacity 0.6s;
+            backface-visibility: hidden;
+            opacity: 0;
+            transform: rotateY(90deg);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: rotateY(0);
+        }
+        
+        .slide.next {
+            transform: rotateY(-90deg);
+        }
+        
+        .slide-title {
+            font-size: 2.4rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            font-weight: 700;
+        }
+        
+        .slide-content {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .text-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        ul {
+            padding-left: 25px;
+            margin: 20px 0;
+            line-height: 1.7;
+        }
+        
+        li {
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+            color: #2c3e50;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            width: 280px;
+            height: 200px;
+        }
+        
+        .grid-item {
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .grid-item:hover {
+            transform: scale(1.05);
+            background: #2980b9;
+        }
+        
+        .fr-demo {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 10px;
+            height: 150px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        
+        .fr-item {
+            background: #3498db;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            border-radius: 6px;
+        }
+        
+        .minmax-demo {
+            width: 280px;
+            height: 200px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .minmax-visual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100px;
+        }
+        
+        .minmax-bar {
+            height: 30px;
+            background: #3498db;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .gallery-preview {
+            width: 280px;
+            height: 250px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            height: 100%;
+            padding: 10px;
+        }
+        
+        .gallery-item {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .featured-item {
+            grid-column: span 2;
+            background: linear-gradient(45deg, #e74c3c, #9b59b6);
+        }
+        
+        .object-fit-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 280px;
+        }
+        
+        .image-container {
+            width: 100%;
+            height: 80px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        
+        .image-placeholder {
+            width: 120px;
+            height: 60px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .highlight {
+            background: #fffacd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .key-point {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+        }
+        
+        .nav-side {
+            width: 100px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        .nav-side-btn {
+            pointer-events: all;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nav-side-btn:hover {
+            background: rgba(41, 128, 185, 0.95);
+            transform: scale(1.1);
+        }
+        
+        .nav-side-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .prev-btn {
+            margin-right: 20px;
+        }
+        
+        .next-btn {
+            margin-left: 20px;
+        }
+        
+        .gap-demo {
+            width: 280px;
+            height: 150px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .gap-item {
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 950px) {
+            .slide-container {
+                width: 90%;
+                height: 85vh;
+            }
+            
+            .slide {
+                padding: 30px;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                padding: 0 20px;
+            }
+            
+            .nav-side-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .visual-content {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1 class="slide-title">Galería Responsive con CSS Grid: Auto-fit y Minmax()</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p style="font-size: 1.8rem; line-height: 1.6; margin-top: 80px;">
+                        Creando galerías adaptativas sin media queries<br>
+                        <span style="color:#3498db; font-weight:bold">CSS Grid</span>, <span style="color:#3498db; font-weight:bold">auto-fit</span> y <span style="color:#3498db; font-weight:bold">minmax()</span><br>
+                        <span style="font-size:1.4rem; color:#7f8c8d; margin-top:20px; display:block">Diseños responsivos automáticos y profesionales</span>
+                    </p>
+                </div>
+                <div class="visual-content">
+                    <div class="gallery-preview">
+                        <div class="gallery-grid">
+                            <div class="gallery-item">IMG 1</div>
+                            <div class="gallery-item">IMG 2</div>
+                            <div class="gallery-item featured-item">DESTACADO</div>
+                            <div class="gallery-item">IMG 4</div>
+                            <div class="gallery-item">IMG 5</div>
+                            <div class="gallery-item">IMG 6</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">1/10</div>
+        </div>
+        
+        <!-- Slide 2: CSS Grid Introduction -->
+        <div class="slide">
+            <h1 class="slide-title">Introducción a CSS Grid</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>CSS Grid</strong> es un sistema de layout <span class="highlight">bidimensional</span> que trabaja con filas y columnas simultáneamente.
+                    </div>
+                    
+                    <h3>¿Por qué usar Grid para galerías?</h3>
+                    <ul>
+                        <li>Control preciso sobre la disposición de imágenes</li>
+                        <li>Responsive automático con <code>auto-fit</code> y <code>minmax()</code></li>
+                        <li>Sin necesidad de media queries complejas</li>
+                        <li>Gap consistente entre elementos</li>
+                        <li>Soporte para elementos destacados de diferentes tamaños</li>
+                    </ul>
+                    
+                    <div class="key-point">
+                        <strong>Ventaja clave:</strong> CSS Grid permite crear layouts responsivos que se adaptan automáticamente al tamaño del contenedor, sin necesidad de escribir múltiples media queries.
+                    </div>
+                    
+                    <div class="code-block">
+                        .gallery {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));<br>
+                        &nbsp;&nbsp;gap: 1.5rem;<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="grid-demo">
+                        <div class="grid-item">1</div>
+                        <div class="grid-item">2</div>
+                        <div class="grid-item">3</div>
+                        <div class="grid-item">4</div>
+                        <div class="grid-item">5</div>
+                        <div class="grid-item">6</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">2/10</div>
+        </div>
+        
+        <!-- Slide 3: Auto-fit and Minmax -->
+        <div class="slide">
+            <h1 class="slide-title">Auto-fit y Minmax(): El Secreto del Responsive</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>auto-fit</strong> y <strong>minmax()</strong> trabajan juntos para crear layouts responsivos automáticos sin media queries.
+                    </div>
+                    
+                    <h3>¿Cómo funciona?</h3>
+                    <ul>
+                        <li><span class="highlight">repeat(auto-fit, minmax())</span>: Crea tantas columnas como quepan en el contenedor</li>
+                        <li><span class="highlight">minmax(250px, 1fr)</span>: Cada columna tiene un mínimo de 250px y máximo de 1fr</li>
+                        <li><span class="highlight">auto-fit</span>: Ajusta automáticamente el número de columnas</li>
+                        <li><span class="highlight">1fr</span>: Fracción del espacio disponible</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        /* Mínimo 250px, máximo 1fr */<br>
+                        grid-template-columns: repeat(<span style="color:#e74c3c">auto-fit</span>, <span style="color:#2ecc71">minmax(250px, 1fr)</span>);<br><br>
+                        /* Comportamiento */<br>
+                        • En pantallas grandes: 4 columnas<br>
+                        • En pantallas medianas: 2-3 columnas<br>
+                        • En móviles: 1 columna
+                    </div>
+                    
+                    <div class="key-point">
+                        <strong>Diferencia con auto-fill:</strong> auto-fit colapsa columnas vacías y expande los items, mientras que auto-fill mantiene columnas vacías.
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="minmax-demo">
+                        <div class="minmax-visual">
+                            <div class="minmax-bar" style="width:40px;">Mín 250px</div>
+                            <div class="minmax-bar" style="width:80px; background:#2ecc71;">2fr</div>
+                            <div class="minmax-bar" style="width:60px; background:#e74c3c;">1.5fr</div>
+                        </div>
+                        <div style="text-align:center; color:#7f8c8d; font-size:0.9rem;">
+                            El espacio se distribuye proporcionalmente<br>
+                            respetando el tamaño mínimo
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">3/10</div>
+        </div>
+        
+        <!-- Slide 4: The FR Unit -->
+        <div class="slide">
+            <h1 class="slide-title">La Unidad FR (Fraction)</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>fr</strong> (fraction) es la unidad más importante de CSS Grid. Representa una fracción del <span class="highlight">espacio disponible</span>.
+                    </div>
+                    
+                    <h3>Ejemplos Prácticos</h3>
+                    <ul>
+                        <li><span class="highlight">1fr 1fr 1fr</span>: 3 columnas iguales</li>
+                        <li><span class="highlight">2fr 1fr</span>: Primera columna doble que la segunda</li>
+                        <li><span class="highlight">250px 1fr 2fr</span>: Columna fija + proporcional + doble proporcional</li>
+                        <li><span class="highlight">minmax(250px, 1fr)</span>: Mínimo 250px, máximo 1fr</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        /* 3 columnas iguales */<br>
+                        grid-template-columns: 1fr 1fr 1fr;<br><br>
+                        /* Layout sidebar + contenido */<br>
+                        grid-template-columns: 250px 1fr;<br><br>
+                        /* Layout responsivo */<br>
+                        grid-template-columns: minmax(250px, 1fr) repeat(auto-fill, minmax(250px, 1fr));
+                    </div>
+                    
+                    <div class="key-point">
+                        <strong>¡Ventaja!</strong> fr se calcula después de otros tamaños, garantizando que el layout use todo el espacio disponible.
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="fr-demo">
+                        <div class="fr-item">1fr</div>
+                        <div class="fr-item" style="background:#2ecc71;">2fr</div>
+                        <div class="fr-item">1fr</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">4/10</div>
+        </div>
+        
+        <!-- Slide 5: Grid Gap -->
+        <div class="slide">
+            <h1 class="slide-title">Grid Gap: Espaciado Perfecto</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>gap</strong> (anteriormente grid-gap) proporciona un espaciado consistente y limpio entre los elementos de la cuadrícula.
+                    </div>
+                    
+                    <h3>Ventajas de usar gap</h3>
+                    <ul>
+                        <li>Elimina la necesidad de usar márgenes negativos</li>
+                        <li>El espaciado se aplica solo entre elementos, no en los bordes</li>
+                        <li>Sintaxis simple y consistente</li>
+                        <li>Soporte para espaciado horizontal y vertical independiente</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        /* Gap uniforme */<br>
+                        .gallery {<br>
+                        &nbsp;&nbsp;gap: 1.5rem;<br>
+                        }<br><br>
+                        /* Gap diferente en cada eje */<br>
+                        .gallery {<br>
+                        &nbsp;&nbsp;row-gap: 1rem; /* vertical */<br>
+                        &nbsp;&nbsp;column-gap: 2rem; /* horizontal */<br>
+                        }<br><br>
+                        /* Shorthand */<br>
+                        .gallery {<br>
+                        &nbsp;&nbsp;gap: 1rem 2rem; /* row column */<br>
+                        }
+                    </div>
+                    
+                    <div class="key-point">
+                        <strong>Mejor práctica:</strong> Siempre usa gap en lugar de margin para el espaciado entre elementos de grid. Es más consistente y evita problemas con el cálculo de tamaños.
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="gap-demo">
+                        <div class="gap-item">Item 1</div>
+                        <div class="gap-item">Item 2</div>
+                        <div class="gap-item">Item 3</div>
+                        <div class="gap-item">Item 4</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">5/10</div>
+        </div>
+        
+        <!-- Slide 6: Object-fit for Images -->
+        <div class="slide">
+            <h1 class="slide-title">Object-fit: Imágenes Perfectas en Cualquier Contenedor</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>object-fit</strong> controla cómo las imágenes se adaptan a sus contenedores, manteniendo sus proporciones y evitando distorsiones.
+                    </div>
+                    
+                    <h3>Valores Comunes</h3>
+                    <ul>
+                        <li><span class="highlight">contain</span>: Mantiene proporción, toda la imagen visible (puede tener espacios)</li>
+                        <li><span class="highlight">cover</span>: Mantiene proporción, cubre todo el contenedor (puede recortar)</li>
+                        <li><span class="highlight">fill</span>: Estira para llenar el contenedor (distorsiona)</li>
+                        <li><span class="highlight">none</span>: Tamaño original</li>
+                        <li><span class="highlight">scale-down</span>: Como none o contain, el que sea más pequeño</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        .gallery-item img {<br>
+                        &nbsp;&nbsp;width: 100%;<br>
+                        &nbsp;&nbsp;height: 100%;<br>
+                        &nbsp;&nbsp;object-fit: cover;<br>
+                        &nbsp;&nbsp;border-radius: 8px;<br>
+                        }
+                    </div>
+                    
+                    <div class="key-point">
+                        <strong>¡Importante!</strong> Siempre establece width y height en el contenedor de la imagen para que object-fit funcione correctamente.
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="object-fit-demo">
+                        <div class="image-container">
+                            <div class="image-placeholder" style="background:#3498db;">object-fit: cover</div>
+                        </div>
+                        <div class="image-container">
+                            <div class="image-placeholder" style="background:#2ecc71; width:80px;">object-fit: contain</div>
+                        </div>
+                        <div class="image-container">
+                            <div class="image-placeholder" style="background:#e74c3c; width:120px; height:40px;">object-fit: fill</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">6/10</div>
+        </div>
+        
+        <!-- Slide 7: Creating the Gallery -->
+        <div class="slide">
+            <h1 class="slide-title">Creando la Galería Básica</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>Estructura HTML semántica</strong> con figcaption y roles de accesibilidad para mejor SEO y accesibilidad.
+                    </div>
+                    
+                    <h3>Código Completo</h3>
+                    <div class="code-block">
+                        &lt;div class="gallery"&gt;<br>
+                        &nbsp;&nbsp;&lt;figure class="gallery-item"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;img src="imagen1.jpg" alt="Descripción imagen 1"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;figcaption&gt;Imagen 1&lt;/figcaption&gt;<br>
+                        &nbsp;&nbsp;&lt;/figure&gt;<br>
+                        &nbsp;&nbsp;&lt;figure class="gallery-item"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;img src="imagen2.jpg" alt="Descripción imagen 2"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;figcaption&gt;Imagen 2&lt;/figcaption&gt;<br>
+                        &nbsp;&nbsp;&lt;/figure&gt;<br>
+                        &nbsp;&nbsp;...<br>
+                        &lt;/div&gt;
+                    </div>
+                    
+                    <h3>CSS Básico</h3>
+                    <div class="code-block">
+                        .gallery {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));<br>
+                        &nbsp;&nbsp;gap: 1.5rem;<br>
+                        &nbsp;&nbsp;padding: 1rem;<br>
+                        }<br><br>
+                        .gallery-item {<br>
+                        &nbsp;&nbsp;overflow: hidden;<br>
+                        &nbsp;&nbsp;border-radius: 12px;<br>
+                        &nbsp;&nbsp;box-shadow: 0 3px 10px rgba(0,0,0,0.1);<br>
+                        &nbsp;&nbsp;transition: transform 0.3s ease;<br>
+                        }<br><br>
+                        .gallery-item img {<br>
+                        &nbsp;&nbsp;width: 100%;<br>
+                        &nbsp;&nbsp;height: 200px;<br>
+                        &nbsp;&nbsp;object-fit: cover;<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="gallery-preview" style="height:220px;">
+                        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); height:180px;">
+                            <div class="gallery-item" style="background:#3498db;"></div>
+                            <div class="gallery-item" style="background:#2ecc71;"></div>
+                            <div class="gallery-item" style="background:#e74c3c;"></div>
+                            <div class="gallery-item" style="background:#9b59b6;"></div>
+                            <div class="gallery-item" style="background:#f39c12;"></div>
+                            <div class="gallery-item" style="background:#1abc9c;"></div>
+                        </div>
+                        <div style="text-align:center; margin-top:15px; font-size:0.9rem; color:#7f8c8d;">
+                            Cada item se adapta automáticamente<br>
+                            al tamaño del contenedor
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">7/10</div>
+        </div>
+        
+        <!-- Slide 8: Hover Effects -->
+        <div class="slide">
+            <h1 class="slide-title">Efectos Hover Interactivos</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>Efectos de hover</strong> mejoran la experiencia de usuario y proporcionan feedback visual sobre la interactividad de los elementos.
+                    </div>
+                    
+                    <h3>Efectos Comunes para Galerías</h3>
+                    <ul>
+                        <li>Escala suave al pasar el mouse</li>
+                        <li>Sombra aumentada para profundidad</li>
+                        <li>Overlay con información adicional</li>
+                        <li>Efectos de transición de color</li>
+                        <li>Animación de figcaption</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        .gallery-item {<br>
+                        &nbsp;&nbsp;position: relative;<br>
+                        &nbsp;&nbsp;overflow: hidden;<br>
+                        &nbsp;&nbsp;transition: all 0.3s ease;<br>
+                        }<br><br>
+                        .gallery-item:hover {<br>
+                        &nbsp;&nbsp;transform: translateY(-5px);<br>
+                        &nbsp;&nbsp;box-shadow: 0 10px 25px rgba(0,0,0,0.2);<br>
+                        }<br><br>
+                        .gallery-item::after {<br>
+                        &nbsp;&nbsp;content: '';<br>
+                        &nbsp;&nbsp;position: absolute;<br>
+                        &nbsp;&nbsp;top: 0;<br>
+                        &nbsp;&nbsp;left: 0;<br>
+                        &nbsp;&nbsp;width: 100%;<br>
+                        &nbsp;&nbsp;height: 100%;<br>
+                        &nbsp;&nbsp;background: rgba(52, 152, 219, 0.8);<br>
+                        &nbsp;&nbsp;opacity: 0;<br>
+                        &nbsp;&nbsp;transition: opacity 0.3s;<br>
+                        }<br><br>
+                        .gallery-item:hover::after {<br>
+                        &nbsp;&nbsp;opacity: 1;<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="gallery-item" style="width:250px; height:180px; background:linear-gradient(45deg, #3498db, #2ecc71); border-radius:12px; position:relative; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.1); display:flex; justify-content:center; align-items:center; color:white; font-weight:bold; transition:all 0.3s;">
+                        <div>Pasa el mouse aquí</div>
+                        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); opacity:0; transition:opacity 0.3s;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">8/10</div>
+        </div>
+        
+        <!-- Slide 9: Featured Item -->
+        <div class="slide">
+            <h1 class="slide-title">Item Destacado y Técnicas Avanzadas</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="key-point">
+                        <strong>Items destacados</strong> pueden ocupar múltiples columnas o filas para crear puntos focales visuales y jerarquía en la galería.
+                    </div>
+                    
+                    <h3>Posicionamiento en Grid</h3>
+                    <ul>
+                        <li><span class="highlight">grid-column: span 2</span>: Ocupa 2 columnas</li>
+                        <li><span class="highlight">grid-row: span 2</span>: Ocupa 2 filas</li>
+                        <li><span class="highlight">grid-column: 1 / -1</span>: De inicio a fin</li>
+                    </ul>
+                    
+                    <div class="code-block">
+                        .featured {<br>
+                        &nbsp;&nbsp;grid-column: span 2;<br>
+                        &nbsp;&nbsp;grid-row: span 2;<br>
+                        &nbsp;&nbsp;min-height: 400px;<br>
+                        }<br><br>
+                        /* Responsive: en móviles vuelve a ser normal */<br>
+                        @media (max-width: 768px) {<br>
+                        &nbsp;&nbsp;.featured {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;grid-column: span 1;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;grid-row: span 1;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;min-height: 200px;<br>
+                        &nbsp;&nbsp;}<br>
+                        }
+                    </div>
+                    
+                    <h3>Bonus: Técnicas Avanzadas</h3>
+                    <ul>
+                        <li><span class="highlight">Lazy loading</span>: Cargar imágenes solo cuando son visibles</li>
+                        <li><span class="highlight">Modal de imagen</span>: Ampliar imagen al hacer click</li>
+                        <li><span class="highlight">Filtros CSS</span>: Efectos de color y brillo</li>
+                        <li><span class="highlight">Masonry layout</span>: Con grid-auto-rows y grid-auto-flow</li>
+                    </ul>
+                </div>
+                <div class="visual-content">
+                    <div class="gallery-preview" style="height:230px;">
+                        <div class="gallery-grid" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); height:190px; grid-template-rows: repeat(2, 1fr);">
+                            <div class="gallery-item" style="background:#3498db;"></div>
+                            <div class="gallery-item" style="background:#2ecc71;"></div>
+                            <div class="gallery-item featured-item" style="background:linear-gradient(45deg, #e74c3c, #9b59b6);"></div>
+                            <div class="gallery-item" style="background:#f39c12;"></div>
+                            <div class="gallery-item" style="background:#1abc9c;"></div>
+                            <div class="gallery-item" style="background:#34495e;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">9/10</div>
+        </div>
+        
+        <!-- Slide 10: Summary & Practice -->
+        <div class="slide">
+            <h1 class="slide-title">¡A Practicar!</h1>
+            <div class="slide-content">
+                <div class="text-content" style="text-align:center; margin-top:50px">
+                    <p style="font-size:1.8rem; margin-bottom:30px; color:#2c3e50">Retos para Practicar</p>
+                    <ul style="display:inline-block; text-align:left; max-width:500px; margin:0 auto;">
+                        <li style="margin-bottom:15px;">🎯 Crea una galería con auto-fit y minmax(250px, 1fr)</li>
+                        <li style="margin-bottom:15px;">🎯 Añade efectos hover interactivos</li>
+                        <li style="margin-bottom:15px;">🎯 Implementa un item destacado que ocupe 2 columnas</li>
+                        <li style="margin-bottom:15px;">🎯 Usa object-fit: cover para las imágenes</li>
+                        <li>🎯 Implementa un modal al hacer click en las imágenes</li>
+                    </ul>
+                    <div style="margin-top:30px; padding:20px; background:#e8f4f8; border-radius:8px; max-width:500px; margin:30px auto 0 auto;">
+                        <div style="font-weight:bold; margin-bottom:10px; color:#3498db;">Recuerda:</div>
+                        <div style="line-height:1.6;">
+                            CSS Grid con auto-fit y minmax() es la forma moderna de crear layouts responsivos sin media queries complejas. ¡Domina esta técnica para crear diseños adaptables y profesionales!
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div style="text-align:center; background:linear-gradient(135deg, #3498db, #2c3e50); color:white; width:240px; height:240px; border-radius:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; border:3px solid white; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+                        <div style="font-size:3rem; margin-bottom:15px;">✨</div>
+                        <div style="font-size:1.8rem; font-weight:bold; margin-bottom:15px;">CSS Grid</div>
+                        <div style="font-size:1.5rem; background:rgba(255,255,255,0.2); padding:8px 20px; border-radius:30px; margin-bottom:15px;">
+                            Master
+                        </div>
+                        <div style="margin-top:15px; font-size:0.9rem; opacity:0.9;">
+                            Responsive sin media queries
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">10/10</div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-side">
+            <button class="nav-side-btn prev-btn" id="prev">←</button>
+        </div>
+        <div class="nav-side">
+            <button class="nav-side-btn next-btn" id="next">→</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
+            let currentSlide = 0;
+            
+            function updateSlides() {
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active', 'next');
+                    
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else if (index === currentSlide + 1) {
+                        slide.classList.add('next');
+                    }
+                });
+                
+                // Update slide counter on all slides
+                document.querySelectorAll('.slide-counter').forEach(counter => {
+                    counter.textContent = `${currentSlide + 1}/${slides.length}`;
+                });
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                } else if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Touch swipe navigation
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.querySelector('.slide-container').addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.querySelector('.slide-container').addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                if (touchStartX - touchEndX > 50 && currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                } else if (touchEndX - touchStartX > 50 && currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                }
+            }
+            
+            // Initialize first slide
+            updateSlides();
+        });
+    </script>
+</body>
+</html>
+

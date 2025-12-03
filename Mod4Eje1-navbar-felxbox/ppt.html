@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominando la Navegación Responsive: Navbar con Flexbox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .slide-container {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            perspective: 1000px;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1.000), opacity 0.6s;
+            backface-visibility: hidden;
+            opacity: 0;
+            transform: rotateY(90deg);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: rotateY(0);
+        }
+        
+        .slide.next {
+            transform: rotateY(-90deg);
+        }
+        
+        .slide-title {
+            font-size: 2.4rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            font-weight: 700;
+        }
+        
+        .slide-content {
+            flex: 1;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .text-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        ul {
+            padding-left: 25px;
+            margin: 20px 0;
+            line-height: 1.7;
+        }
+        
+        li {
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+            color: #2c3e50;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        
+        .navbar-demo {
+            width: 100%;
+            background: #2c3e50;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #34495e;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.sticky {
+            background: #2c3e50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-link {
+            color: #bdc3c7;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            background: transparent;
+            color: white;
+            border: 1px solid #3498db;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            border: none;
+        }
+        
+        .btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .hamburger {
+            display: none;
+            width: 25px;
+            height: 20px;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .line {
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        
+        .responsive-demo {
+            width: 100%;
+            max-width: 300px;
+            background: #34495e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+        }
+        
+        .mobile-nav {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            background: #34495e;
+        }
+        
+        .flex-properties {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .property-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .property-card h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .media-query-example {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .sticky-demo {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background: #ecf0f1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sticky-navbar {
+            position: sticky;
+            top: 10px;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .scroll-indicator {
+            width: 40px;
+            height: 80px;
+            border: 2px solid #3498db;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            animation: scroll 2s infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(20px); opacity: 0; }
+        }
+        
+        .highlight {
+            background: #fffacd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .key-point {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+        
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+        }
+        
+        .nav-side {
+            width: 100px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        .nav-side-btn {
+            pointer-events: all;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.9);
+            color: white;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .nav-side-btn:hover {
+            background: rgba(41, 128, 185, 0.95);
+            transform: scale(1.1);
+        }
+        
+        .nav-side-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .prev-btn {
+            margin-right: 20px;
+        }
+        
+        .next-btn {
+            margin-left: 20px;
+        }
+        
+        @media (max-width: 950px) {
+            .slide-container {
+                width: 90%;
+                height: 85vh;
+            }
+            
+            .slide {
+                padding: 30px;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                padding: 0 20px;
+            }
+            
+            .nav-side-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1 class="slide-title">Dominando la Navegación Responsive: Navbar con Flexbox</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <p style="font-size: 1.8rem; line-height: 1.6; margin-top: 80px;">
+                        Creando barras de navegación modernas y profesionales<br>
+                        <span style="color:#3498db; font-weight:bold">Flexbox</span>, <span style="color:#3498db; font-weight:bold">responsive design</span> y <span style="color:#3498db; font-weight:bold">sticky navigation</span><br>
+                        <span style="font-size:1.4rem; color:#7f8c8d; margin-top:20px; display:block">Layouts flexibles y adaptables para cualquier dispositivo</span>
+                    </p>
+                </div>
+                <div class="visual-content">
+                    <div class="navbar-demo">
+                        <div class="navbar">
+                            <div class="logo">Logo</div>
+                            <div class="nav-links">
+                                <a href="#" class="nav-link active">Inicio</a>
+                                <a href="#" class="nav-link">Servicios</a>
+                                <a href="#" class="nav-link">Precios</a>
+                                <a href="#" class="nav-link">Contacto</a>
+                            </div>
+                            <div class="cta-buttons">
+                                <button class="btn">Login</button>
+                                <button class="btn btn-primary">Registro</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">1/10</div>
+        </div>
+        
+        <!-- Slide 2: Why Flexbox for Navbar -->
+        <div class="slide">
+            <h1 class="slide-title">¿Por qué Flexbox para Navegación?</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li><span class="highlight">Alineación perfecta</span>: elementos alineados vertical y horizontalmente</li>
+                        <li><span class="highlight">Distribución de espacio</span>: espacio entre elementos controlado con juste-content</li>
+                        <li><span class="highlight">Orden flexible</span>: cambiar el orden visual sin cambiar el HTML</li>
+                        <li><span class="highlight">Responsive nativo</span>: con flex-wrap se adapta a diferentes tamaños de pantalla</li>
+                        <li><span class="highlight">Menos código</span>: elimina floats y clearfix hacks</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Ventaja clave:</strong> Flexbox simplifica la creación de layouts complejos de navegación con solo unas pocas propiedades CSS, en lugar de depender de hacks de posicionamiento histórico.
+                    </div>
+                    <div class="code-block">
+                        /* Antes de Flexbox */<br>
+                        .nav { float: left; clear: both; }<br>
+                        .nav-item { display: inline-block; }<br><br>
+                        /* Con Flexbox */<br>
+                        .nav { display: flex; justify-content: space-between; }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="flex-properties">
+                        <div class="property-card">
+                            <h3>justify-content</h3>
+                            <p>Distribuye el espacio entre elementos en el eje principal</p>
+                        </div>
+                        <div class="property-card">
+                            <h3>align-items</h3>
+                            <p>Alinea elementos en el eje transversal (vertical para rows)</p>
+                        </div>
+                        <div class="property-card">
+                            <h3>flex-wrap</h3>
+                            <p>Permite que los elementos se muevan a nuevas líneas en pantallas pequeñas</p>
+                        </div>
+                        <div class="property-card">
+                            <h3>gap</h3>
+                            <p>Espacio consistente entre elementos (moderno, recomendado)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">2/10</div>
+        </div>
+        
+        <!-- Slide 3: HTML Structure -->
+        <div class="slide">
+            <h1 class="slide-title">Estructura HTML Semántica</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>Usar elemento <span class="highlight">&lt;nav&gt;</span> para mejor accesibilidad</li>
+                        <li>Estructura clara y mantenible</li>
+                        <li>Incluir botón hamburguesa para móviles</li>
+                        <li>Aria attributes para accesibilidad</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Mejor práctica:</strong> Siempre incluye role="navigation" y aria-label para mejorar la accesibilidad en lectores de pantalla.
+                    </div>
+                    <div class="code-block">
+                        &lt;nav class="navbar" role="navigation" aria-label="Main navigation"&gt;<br>
+                        &nbsp;&nbsp;&lt;div class="logo"&gt;&lt;a href="#"&gt;Logo&lt;/a&gt;&lt;/div&gt;<br><br>
+                        &nbsp;&nbsp;&lt;button class="hamburger" aria-expanded="false" aria-controls="mobile-menu"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="line"&gt;&lt;/span&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="line"&gt;&lt;/span&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="line"&gt;&lt;/span&gt;<br>
+                        &nbsp;&nbsp;&lt;/button&gt;<br><br>
+                        &nbsp;&nbsp;&lt;div class="nav-links" id="mobile-menu"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#" class="nav-link"&gt;Inicio&lt;/a&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#" class="nav-link"&gt;Servicios&lt;/a&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#" class="nav-link"&gt;Precios&lt;/a&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;a href="#" class="nav-link"&gt;Contacto&lt;/a&gt;<br>
+                        &nbsp;&nbsp;&lt;/div&gt;<br><br>
+                        &nbsp;&nbsp;&lt;div class="cta-buttons"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="btn"&gt;Login&lt;/button&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="btn btn-primary"&gt;Registro&lt;/button&gt;<br>
+                        &nbsp;&nbsp;&lt;/div&gt;<br>
+                        &lt;/nav&gt;
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div style="text-align:center;">
+                        <div style="font-size:4rem; margin-bottom:20px;">🔍</div>
+                        <div style="font-size:1.8rem; font-weight:bold; margin-bottom:20px;">HTML Semántico</div>
+                        <div style="background:#f8f9fa; padding:20px; border-radius:12px; border:1px solid #ddd;">
+                            <div style="font-weight:bold; margin-bottom:10px;">Estructura clave:</div>
+                            <ul style="text-align:left; line-height:1.6;">
+                                <li>&lt;nav&gt; para la barra de navegación</li>
+                                <li>Botón hamburguesa oculto en desktop</li>
+                                <li>Div para links de navegación</li>
+                                <li>Contenedor para botones de acción</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">3/10</div>
+        </div>
+        
+        <!-- Slide 4: Basic Flexbox CSS -->
+        <div class="slide">
+            <h1 class="slide-title">CSS Básico con Flexbox</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>Display flex para el contenedor navbar</li>
+                        <li>justify-content para distribuir elementos</li>
+                        <li>align-items para centrado vertical</li>
+                        <li>Flex-wrap para responsive</li>
+                        <li>Gap para espacio entre elementos</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Importante:</strong> Siempre aplica box-sizing: border-box en todos los elementos para prevenir cálculos inesperados de tamaño con padding y border.
+                    </div>
+                    <div class="code-block">
+                        .navbar {<br>
+                        &nbsp;&nbsp;display: flex;<br>
+                        &nbsp;&nbsp;justify-content: space-between;<br>
+                        &nbsp;&nbsp;align-items: center;<br>
+                        &nbsp;&nbsp;flex-wrap: wrap;<br>
+                        &nbsp;&nbsp;gap: 20px;<br>
+                        &nbsp;&nbsp;padding: 1rem 2rem;<br>
+                        &nbsp;&nbsp;background: #2c3e50;<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="navbar-demo">
+                        <div class="navbar" style="background:#3498db; justify-content:center; gap:30px; padding:20px;">
+                            <div class="logo" style="color:white;">Logo</div>
+                            <div class="nav-links">
+                                <a href="#" class="nav-link" style="color:white;">Inicio</a>
+                                <a href="#" class="nav-link" style="color:white;">Servicios</a>
+                                <a href="#" class="nav-link" style="color:white;">Contacto</a>
+                            </div>
+                            <div class="cta-buttons">
+                                <button class="btn" style="border-color:white; color:white;">Login</button>
+                                <button class="btn btn-primary">Registro</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">4/10</div>
+        </div>
+        
+        <!-- Slide 5: Responsive Design -->
+        <div class="slide">
+            <h1 class="slide-title">Diseño Responsive con Media Queries</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>Media queries para pantallas menores a 768px</li>
+                        <li>Mostrar botón hamburguesa en móviles</li>
+                        <li>Ocultar menú de navegación por defecto en móviles</li>
+                        <li>Cambiar dirección flex a column en móviles</li>
+                        <li>Reorganizar elementos para mejor experiencia móvil</li>
+                    </ul>
+                    <div class="media-query-example">
+                        <div style="font-weight:bold; margin-bottom:10px; color:#3498db;">@media (max-width: 768px)</div>
+                        <div style="font-family:monospace; line-height:1.6;">
+                            .hamburger { display: flex; }<br>
+                            .nav-links {<br>
+                            &nbsp;&nbsp;display: none;<br>
+                            &nbsp;&nbsp;width: 100%;<br>
+                            &nbsp;&nbsp;flex-direction: column;<br>
+                            &nbsp;&nbsp;margin-top: 15px;<br>
+                            }<br>
+                            .nav-links.active { display: flex; }
+                        </div>
+                    </div>
+                    <div class="key-point">
+                        <strong>Patrón móvil primero:</strong> Diseña primero para móviles y luego mejora para pantallas más grandes con media queries min-width.
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="responsive-demo">
+                        <div class="mobile-nav">
+                            <div class="logo" style="color:white; font-size:1.2rem;">Logo</div>
+                            <div class="hamburger" style="display:flex;">
+                                <div class="line"></div>
+                                <div class="line"></div>
+                                <div class="line"></div>
+                            </div>
+                        </div>
+                        <div class="mobile-menu" style="display:flex;">
+                            <a href="#" class="nav-link" style="color:white;">Inicio</a>
+                            <a href="#" class="nav-link" style="color:white;">Servicios</a>
+                            <a href="#" class="nav-link" style="color:white;">Precios</a>
+                            <a href="#" class="nav-link" style="color:white;">Contacto</a>
+                            <div class="cta-buttons" style="margin-top:15px; flex-direction:column; gap:10px;">
+                                <button class="btn" style="border-color:white; color:white; width:100%;">Login</button>
+                                <button class="btn btn-primary" style="width:100%;">Registro</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">5/10</div>
+        </div>
+        
+        <!-- Slide 6: Sticky Navigation -->
+        <div class="slide">
+            <h1 class="slide-title">Navegación Sticky con position: sticky</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>position: sticky para navbar que se fija al hacer scroll</li>
+                        <li>top: 0 para fijar en la parte superior</li>
+                        <li>z-index alto para mantenerse por encima del contenido</li>
+                        <li>Cambiar estilo al hacer scroll (sombra, fondo)</li>
+                        <li>Detectar scroll con JavaScript para añadir clase sticky</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Diferencia vs fixed:</strong> position: sticky respeta el flujo del documento y se libera cuando su contenedor padre sale de la pantalla, a diferencia de position: fixed que siempre permanece visible.
+                    </div>
+                    <div class="code-block">
+                        .navbar {<br>
+                        &nbsp;&nbsp;position: sticky;<br>
+                        &nbsp;&nbsp;top: 0;<br>
+                        &nbsp;&nbsp;z-index: 1000;<br>
+                        &nbsp;&nbsp;transition: all 0.3s ease;<br>
+                        }<br><br>
+                        .navbar.sticky {<br>
+                        &nbsp;&nbsp;background: #2c3e50;<br>
+                        &nbsp;&nbsp;box-shadow: 0 2px 10px rgba(0,0,0,0.1);<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="sticky-demo">
+                        <div style="height:150px; padding:20px;">
+                            <div class="sticky-navbar">NAVBAR STICKY</div>
+                            <div style="margin-top:30px; line-height:1.6;">
+                                Desplaza esta área para ver cómo funciona position: sticky. Al hacer scroll, el navbar se fijará en la parte superior cuando alcance el umbral definido (top: 10px).
+                            </div>
+                        </div>
+                        <div class="scroll-indicator"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">6/10</div>
+        </div>
+        
+        <!-- Slide 7: CSS Transitions & Effects -->
+        <div class="slide">
+            <h1 class="slide-title">Transiciones y Efectos Visuales</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>Transiciones suaves para hover effects</li>
+                        <li>Efectos de subrayado en links de navegación</li>
+                        <li>Cambios de color en botones</li>
+                        <li>Animaciones para el botón hamburguesa</li>
+                        <li>Transiciones para el sticky navbar</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Mejor práctica:</strong> Usa transition: all 0.3s ease para transiciones suaves, y evita animar propiedades como width/height que pueden causar problemas de rendimiento. Prefiere transform y opacity.
+                    </div>
+                    <div class="code-block">
+                        /* Hover effect para links */<br>
+                        .nav-link:hover {<br>
+                        &nbsp;&nbsp;color: white;<br>
+                        &nbsp;&nbsp;position: relative;<br>
+                        }<br>
+                        .nav-link:hover::after {<br>
+                        &nbsp;&nbsp;content: '';<br>
+                        &nbsp;&nbsp;position: absolute;<br>
+                        &nbsp;&nbsp;bottom: -5px;<br>
+                        &nbsp;&nbsp;left: 0;<br>
+                        &nbsp;&nbsp;width: 100%;<br>
+                        &nbsp;&nbsp;height: 2px;<br>
+                        &nbsp;&nbsp;background: white;<br>
+                        &nbsp;&nbsp;animation: slideIn 0.3s;<br>
+                        }
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div class="navbar-demo" style="position:relative; overflow:visible;">
+                        <div class="navbar" style="background:linear-gradient(135deg, #6a11cb, #2575fc); padding:15px 20px;">
+                            <div class="logo" style="color:white; text-shadow:0 0 10px rgba(255,255,255,0.5);">Brand</div>
+                            <div class="nav-links">
+                                <a href="#" class="nav-link" style="position:relative; color:#e1bee7; transition:all 0.3s;">Inicio</a>
+                                <a href="#" class="nav-link" style="position:relative; color:#e1bee7; transition:all 0.3s;">Servicios</a>
+                                <a href="#" class="nav-link" style="position:relative; color:#e1bee7; transition:all 0.3s;">Precios</a>
+                            </div>
+                            <div class="cta-buttons">
+                                <button class="btn" style="border-color:white; color:white; transition:all 0.3s;">Login</button>
+                                <button class="btn btn-primary" style="background:#4fc3f7; transition:all 0.3s;">Registro</button>
+                            </div>
+                        </div>
+                        <div style="position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg, transparent, white, transparent);"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">7/10</div>
+        </div>
+        
+        <!-- Slide 8: JavaScript Functionality -->
+        <div class="slide">
+            <h1 class="slide-title">Funcionalidad con JavaScript</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li>Toggle del menú móvil con botón hamburguesa</li>
+                        <li>Detectar scroll para efecto sticky</li>
+                        <li>Scrollspy para resaltar sección activa</li>
+                        <li>Cerrar menú móvil al hacer click en un link</li>
+                        <li>Cerrar menú al hacer click fuera del navbar</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>Accesibilidad:</strong> Asegúrate de que el menú móvil se pueda cerrar con la tecla Escape y que los usuarios de teclado puedan navegar por los enlaces fácilmente.
+                    </div>
+                    <div class="code-block" style="font-size:0.95rem;">
+                        // Toggle menú móvil<br>
+                        hamburgerBtn.addEventListener('click', () =&gt; {<br>
+                        &nbsp;&nbsp;navLinks.classList.toggle('active');<br>
+                        &nbsp;&nbsp;hamburgerBtn.setAttribute('aria-expanded', <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;navLinks.classList.contains('active')<br>
+                        &nbsp;&nbsp;);<br>
+                        });<br><br>
+                        // Efecto sticky<br>
+                        window.addEventListener('scroll', () =&gt; {<br>
+                        &nbsp;&nbsp;const navbar = document.querySelector('.navbar');<br>
+                        &nbsp;&nbsp;if (window.scrollY > 100) {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;navbar.classList.add('sticky');<br>
+                        &nbsp;&nbsp;} else {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;navbar.classList.remove('sticky');<br>
+                        &nbsp;&nbsp;}<br>
+                        });
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div style="text-align:center;">
+                        <div style="font-size:4rem; margin-bottom:20px;">🖱️</div>
+                        <div style="font-size:1.8rem; font-weight:bold; margin-bottom:20px;">Interactividad</div>
+                        <div style="display:flex; flex-direction:column; gap:15px; width:250px; margin:0 auto;">
+                            <div style="background:#f8f9fa; padding:15px; border-radius:8px; border-left:3px solid #3498db;">
+                                <div style="font-weight:bold; margin-bottom:5px;">Menú Móvil</div>
+                                <div style="font-size:0.9rem; color:#7f8c8d;">Toggle con botón hamburguesa</div>
+                            </div>
+                            <div style="background:#f8f9fa; padding:15px; border-radius:8px; border-left:3px solid #2ecc71;">
+                                <div style="font-weight:bold; margin-bottom:5px;">Sticky Navigation</div>
+                                <div style="font-size:0.9rem; color:#7f8c8d;">Detectar scroll y cambiar estilos</div>
+                            </div>
+                            <div style="background:#f8f9fa; padding:15px; border-radius:8px; border-left:3px solid #e74c3c;">
+                                <div style="font-weight:bold; margin-bottom:5px;">Scrollspy</div>
+                                <div style="font-size:0.9rem; color:#7f8c8d;">Resaltar sección activa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">8/10</div>
+        </div>
+        
+        <!-- Slide 9: Best Practices -->
+        <div class="slide">
+            <h1 class="slide-title">Mejores Prácticas y Patrones Comunes</h1>
+            <div class="slide-content">
+                <div class="text-content">
+                    <ul>
+                        <li><span class="highlight">Mobile-first approach</span>: Diseña primero para móviles, luego mejora para desktop</li>
+                        <li><span class="highlight">Semantic HTML</span>: Usa elementos semánticos como &lt;nav&gt; y &lt;a&gt;</li>
+                        <li><span class="highlight">Accessibility</span>: ARIA attributes y navegación con teclado</li>
+                        <li><span class="highlight">Performance</span>: Minimiza reflows y repaints con transiciones eficientes</li>
+                        <li><span class="highlight">Maintenance</span>: Variables CSS para colores y espaciados</li>
+                    </ul>
+                    <div class="key-point">
+                        <strong>CSS Variables para mantenibilidad:</strong>
+                        <div class="code-block" style="margin-top:10px; font-size:0.95rem;">
+                            :root {<br>
+                            &nbsp;&nbsp;--primary-color: #3498db;<br>
+                            &nbsp;&nbsp;--secondary-color: #2c3e50;<br>
+                            &nbsp;&nbsp;--text-color: #bdc3c7;<br>
+                            &nbsp;&nbsp;--transition: all 0.3s ease;<br>
+                            }<br><br>
+                            .btn-primary {<br>
+                            &nbsp;&nbsp;background: var(--primary-color);<br>
+                            &nbsp;&nbsp;transition: var(--transition);<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div style="width:240px; height:240px; background:linear-gradient(135deg, #3498db, #2c3e50); border-radius:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+                        <div style="font-size:3rem; margin-bottom:15px;">✓</div>
+                        <div style="font-size:1.5rem; font-weight:bold; margin-bottom:15px;">Best Practices</div>
+                        <div style="background:rgba(255,255,255,0.15); padding:8px 20px; border-radius:20px; margin-top:10px;">
+                            Navbar con Flexbox
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">9/10</div>
+        </div>
+        
+        <!-- Slide 10: Practice Exercise -->
+        <div class="slide">
+            <h1 class="slide-title">¡Tu Turno: Crea tu Propia Navbar!</h1>
+            <div class="slide-content">
+                <div class="text-content" style="text-align:center; margin-top:50px">
+                    <p style="font-size:1.8rem; margin-bottom:30px; color:#2c3e50">Retos para Practicar</p>
+                    <ul style="display:inline-block; text-align:left; max-width:500px; margin:0 auto;">
+                        <li style="margin-bottom:15px;">🎯 Crea una navbar con Flexbox y menú hamburguesa</li>
+                        <li style="margin-bottom:15px;">🎯 Implementa position: sticky con transición suave</li>
+                        <li style="margin-bottom:15px;">🎯 Añade efectos hover interactivos</li>
+                        <li style="margin-bottom:15px;">🎯 Hazla completamente responsive</li>
+                        <li>🎯 Implementa scrollspy para resaltar sección activa</li>
+                    </ul>
+                    <div style="margin-top:30px; padding:20px; background:#e8f4f8; border-radius:8px; max-width:500px; margin:30px auto 0 auto;">
+                        <div style="font-weight:bold; margin-bottom:10px; color:#3498db;">Recuerda:</div>
+                        <div style="line-height:1.6;">
+                            Flexbox es tu mejor herramienta para crear layouts de navegación flexibles y adaptables que funcionen perfectamente en cualquier dispositivo.
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-content">
+                    <div style="text-align:center; background:linear-gradient(135deg, #3498db, #2c3e50); color:white; width:240px; height:240px; border-radius:20px; display:flex; flex-direction:column; justify-content:center; align-items:center; border:3px solid white; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
+                        <div style="font-size:3rem; margin-bottom:15px;">🚀</div>
+                        <div style="font-size:1.8rem; font-weight:bold; margin-bottom:15px;">Navbar</div>
+                        <div style="font-size:1.5rem; background:rgba(255,255,255,0.2); padding:8px 20px; border-radius:30px; margin-bottom:15px;">
+                            Master
+                        </div>
+                        <div style="margin-top:15px; font-size:0.9rem; opacity:0.9;">
+                            Con Flexbox & JS
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-counter">10/10</div>
+        </div>
+    </div>
+
+    <!-- Navigation arrows -->
+    <div class="nav-container">
+        <div class="nav-side">
+            <button class="nav-side-btn prev-btn" id="prev">←</button>
+        </div>
+        <div class="nav-side">
+            <button class="nav-side-btn next-btn" id="next">→</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
+            let currentSlide = 0;
+            
+            function updateSlides() {
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active', 'next');
+                    
+                    if (index === currentSlide) {
+                        slide.classList.add('active');
+                    } else if (index === currentSlide + 1) {
+                        slide.classList.add('next');
+                    }
+                });
+                
+                // Update slide counter on all slides
+                document.querySelectorAll('.slide-counter').forEach(counter => {
+                    counter.textContent = `${currentSlide + 1}/${slides.length}`;
+                });
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    currentSlide--;
+                    updateSlides();
+                } else if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    updateSlides();
+                }
+            });
+            
+            // Touch swipe navigation
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.querySelector('.slide-container').addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            document.querySelector('.slide-container').addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                if (touchStartX - touchEndX > 50 && currentSlide < slides.length - 1) {
+                    // Swipe left - next slide
+                    currentSlide++;
+                    updateSlides();
+                } else if (touchEndX - touchStartX > 50 && currentSlide > 0) {
+                    // Swipe right - previous slide
+                    currentSlide--;
+                    updateSlides();
+                }
+            }
+            
+            // Initialize first slide
+            updateSlides();
+        });
+    </script>
+</body>
+</html>
+
